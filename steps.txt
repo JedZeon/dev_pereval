@@ -1,0 +1,13 @@
+Подключаем REST API
+
+pip install djangorestframework
+pip install markdown
+pip install django-filter
+
+Установил и подключил
+rest_framework
+
+Создал и заполнил сериализаторы
+serializers.py
+
+Рефакторинг базы данных
