@@ -50,3 +50,34 @@ class PassSerializer(serializers.ModelSerializer):
             'images',
             'status'
         ]
+
+    def create(self, validated_data):
+        user_ = validated_data.pop('user')
+        coords = validated_data.pop('coords')
+        level = validated_data.pop('level')
+        images = validated_data.pop('images')
+
+        exist_user = PassUser.objects.filter(email=user_['email']).first()
+
+        if not exist_user:
+            exist_user = PassUser.objects.create(**user_)
+
+        coords = Coords.objects.create(**coords)
+        levels = Level.objects.create(**level)
+
+        new_pass = Passes.objects.create(
+            **validated_data,
+            user=exist_user,
+            level=levels,
+            coords=coords,
+            status='new'
+        )
+
+        if images:
+            for image in images:
+                title = image.pop('title')
+                data = image.pop('data')
+                Images.objects.create(pereval=new_pass, title=title, data=data)
+
+        return new_pass
+
