@@ -1,5 +1,6 @@
 from .models import Images, Level, Coords, PassUser, Passes
 from rest_framework import serializers
+from django.db import transaction
 
 
 class CoordsSerializer(serializers.ModelSerializer):
@@ -51,6 +52,9 @@ class PassSerializer(serializers.ModelSerializer):
             'status'
         ]
 
+    # Если новый перевал не создастся не создаются и остальные записи
+    # Через транзакции
+    @transaction.atomic
     def create(self, validated_data):
         user_ = validated_data.pop('user')
         coords = validated_data.pop('coords')
