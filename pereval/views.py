@@ -3,6 +3,7 @@ from rest_framework.response import Response
 
 from pereval.models import Passes, PassUser, Coords, Level, Images
 from pereval.serializers import UserSerializer, CoordsSerializer, LevelSerializer, ImagesSerializer, PassSerializer
+import django_filters
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -28,6 +29,8 @@ class ImageViewSet(viewsets.ModelViewSet):
 class PassesViewSet(viewsets.ModelViewSet):
     queryset = Passes.objects.all()
     serializer_class = PassSerializer
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend, ]
+    filterset_fields = ['beauty_title', 'title', 'add_time', 'user__email']
 
     def create(self, request, *args, **kwargs):
         serializer = PassSerializer(data=request.data)
