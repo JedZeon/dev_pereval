@@ -72,3 +72,22 @@ class PassesViewSet(viewsets.ModelViewSet):
             return Response({
                 'error': 'Перевал не найден',
             })
+
+    def update(self, request, *args, **kwargs):
+        """
+        Обработка запроса изменения перевала
+
+        PATCH /submitData/<id> — изменение перевала по её id.
+        Выведи всю информацию об объекте
+        """
+        instance = self.get_object()
+
+        if instance.status != 'new':
+            return Response({'state': '0', 'message': 'Можно редактировать только записи со статусом "new"'})
+
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            self.perform_update(serializer)
+            return Response({'state': '1', 'message': 'Успешно удалось отредактировать запись в базе данных'})
+        else:
+            return Response({'state': '0', 'message': serializer.errors})
