@@ -55,3 +55,20 @@ class PassesViewSet(viewsets.ModelViewSet):
             'message': message_,
             'id': id_,
         })
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Обработка запроса конкретного перевала
+
+        GET /submitData/<id> — получить одну запись (перевал) по её id.
+        Выведи всю информацию об объекте, в том числе статус модерации
+        """
+        pk_ = self.kwargs.get('pk')
+        pereval_ = Passes.objects.filter(pk=pk_).first()
+        if pereval_:
+            serializer = PassSerializer(pereval_)
+            return Response(serializer.data)
+        else:
+            return Response({
+                'error': 'Перевал не найден',
+            })
