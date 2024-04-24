@@ -139,3 +139,8 @@ images: [{data:<span class="hljs-string">"&lt;картинка1&gt;"</span>, tit
 <li>Документация swagger: http://pogr25.temp.swtest.ru/swagger/</li>
 <li>Документация redoc: http://pogr25.temp.swtest.ru/redoc/</li>
 </ul>
+
+Пример POST запроса:
+<div>
+<pre>{<br />  "beauty_title": "string123",<br />  "title": "string321",<br />  "other_titles": "string 123 321",<br />  "connect": "",<br />  "user": {<br />    "email": "qwerty@mail.ru",<br />    "name": "Вася",<br />    "fam": "Пупкин",<br />    "otc": "Васильевич",<br />    "phone": "+7 902 000 00 00"<br />  },<br />  "coords": {<br />    "latitude": "50",<br />    "longitude": "50",<br />    "height": 1200<br />  },<br />  "level": {<br />    "winter": "1A",<br />    "summer": "",<br />    "autumn": "1A",<br />    "spring": ""<br />  },<br />  "images": <span>[<br /></span><span>    </span>{<br />      "data": "<span>https://assets.habr.com/habr-web/img/avatars/024.png</span>",<br />      "title": "Подъём"<br />    }<br />  <span>]<br /></span>}<span><br /></span></pre>
+</div>
