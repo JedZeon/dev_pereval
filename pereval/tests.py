@@ -7,7 +7,55 @@ from pereval.models import Passes, PassUser, Coords, Level, Images
 from pereval.serializers import PassSerializer
 
 
-class PassTest(APITestCase):
+class PassesTest(TestCase):
+    """ Тесты методов класса БД """
+
+    def setUp(self):
+        """ Установки запускаются перед каждым тестом"""
+
+        # Объект перевал 1
+        self.pass_1 = Passes.objects.create(
+            beauty_title='beauty_title',
+            title='title',
+            other_titles='other_title',
+            connect='connect',
+            user=PassUser.objects.create(
+                email='Ivanov@mail.ru',
+                fam='Иванов',
+                name='Петр',
+                otc='Васильевич',
+                phone='89999999999'
+            ),
+            coords=Coords.objects.create(
+                latitude=22.222,
+                longitude=11.111,
+                height=1000
+            ),
+            level=Level.objects.create(
+                winter='',
+                summer='1A',
+                autumn='1A',
+                spring=''
+            )
+        )
+
+        # Изображение для объекта перевал 1
+        self.image_1 = Images.objects.create(
+            title='Title_1',
+            data='https://images.app.goo.gl/eT3kx7tigk33vNQG8',
+            pereval=self.pass_1
+        )
+
+    def test_is_equal_to_title(self):
+        pass_ = Passes.objects.all().first()
+        image_1 = Images.objects.all().first()
+        self.assertEqual(str(pass_), pass_.title)
+        self.assertEqual(str(image_1), image_1.title)
+
+
+class PassTestRestAPI(APITestCase):
+    """ Тесты REST API """
+
     def setUp(self):
         """ Установки запускаются перед каждым тестом"""
 
@@ -62,6 +110,7 @@ class PassTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_pass_pereval_create(self):
+        """ Тест - создание объекта модели Passes """
         json_text = ('{'
                      '"beauty_title": "пер.",'
                      '"title": "Пхия 123456",'
@@ -101,6 +150,12 @@ class PassTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Passes.objects.count(), 2)
         self.assertEqual(Passes.objects.get(id=response.data['id']).title, 'Пхия 123456')
+
+        # Проверка получения записи
+        url = f'/submitData/{response.data["id"]}/'
+        response2 = self.client.get(url)
+        self.assertEqual(response2.status_code, status.HTTP_200_OK)
+        self.assertEqual(response2.data['title'], 'Пхия 123456')
 
     def test_patch_pereval(self):
         json_text = ('{'
