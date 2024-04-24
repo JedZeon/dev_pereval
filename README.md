@@ -136,6 +136,6 @@ images: [{data:<span class="hljs-string">"&lt;картинка1&gt;"</span>, tit
 </div>
 <ul dir="auto">
 <li>Адрес API: <a href="pogr25.temp.swtest.ru">pogr25.temp.swtest.ru</a></li>
-<li>Документация swagger: ----</li>
-<li>Документация redoc: ----</li>
+<li>Документация swagger: http://pogr25.temp.swtest.ru/swagger/</li>
+<li>Документация redoc: http://pogr25.temp.swtest.ru/redoc/</li>
 </ul>

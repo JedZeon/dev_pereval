@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins
 from rest_framework.response import Response
 
 from pereval.models import Passes, PassUser, Coords, Level, Images
@@ -29,10 +29,25 @@ class ImageViewSet(viewsets.ModelViewSet):
 class PassesViewSet(viewsets.ModelViewSet):
     queryset = Passes.objects.all()
     serializer_class = PassSerializer
+    http_method_names = ['get', 'post', 'patch', ]
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend, ]
-    filterset_fields = ['beauty_title', 'title', 'add_time', 'user__email']
+    filterset_fields = ['user__email', ]
+
+    def list(self, request, *args, **kwargs):
+        """
+        Получить список перевалов, доступен отбор по email
+
+        GET /submitData/ — получить список всех перевалов
+        GET /submitData/?user__email='email' — список данных обо всех объектах, которые пользователь с почтой 'email' отправил на сервер
+        """
+        return super().list(self, request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
+        """
+        Добавление нового перевала
+
+        автоматически присвоится статус - new
+        """
         serializer = PassSerializer(data=request.data)
 
         status_ = ''
@@ -58,11 +73,17 @@ class PassesViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         """
-        Обработка запроса конкретного перевала
+        Получить данные перевала по ID
 
         GET /submitData/<id> — получить одну запись (перевал) по её id.
-        Выведи всю информацию об объекте, в том числе статус модерации
+        Выводит всю информацию об объекте, в том числе статус модерации
         """
+        if request.method != 'GET':
+            return Response({
+                'status': status.HTTP_405_METHOD_NOT_ALLOWED,
+                'message': 'Метод запроса не поддерживается',
+            })
+
         pk_ = self.kwargs.get('pk')
         pereval_ = Passes.objects.filter(pk=pk_).first()
         if pereval_:
@@ -73,12 +94,12 @@ class PassesViewSet(viewsets.ModelViewSet):
                 'error': 'Перевал не найден',
             })
 
-    def update(self, request, *args, **kwargs):
+    def partial_update(self, request, *args, **kwargs):
         """
-        Обработка запроса изменения перевала
+        Внести изменения в существующий перевал, со статусом: new
 
         PATCH /submitData/<id> — изменение перевала по её id.
-        Выведи всю информацию об объекте
+        Выводит всю информацию об объекте
         """
         instance = self.get_object()
 
