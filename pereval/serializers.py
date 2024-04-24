@@ -106,7 +106,7 @@ class PassSerializer(serializers.ModelSerializer):
         level = validated_data.pop('level')
         images = validated_data.pop('images')
 
-        # PassUser.objects.update(**user)
+        PassUser.objects.update(**user)
         Coords.objects.update(**coords)
         Level.objects.update(**level)
 
